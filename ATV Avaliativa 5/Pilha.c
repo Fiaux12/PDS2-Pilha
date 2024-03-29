@@ -1,26 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Pilha;
-typedef struct Pilha
+typedef struct Elemento
 {
     int valor;
-    struct Pilha *anterior
+    struct Elemento *anterior;
+} Elemento;
+
+typedef struct Pilha
+{
+    Elemento *topo;
 } Pilha;
 
 Pilha *criaPilha()
 {
-    Pilha *novoItem;
-    novoItem = (Pilha *)malloc(sizeof(Pilha));
-    novoItem->valor = 0;
-    novoItem->anterior = NULL;
-    return novoItem;
+    Pilha *novaPilha = malloc(sizeof(Pilha));
+    novaPilha->topo = NULL;
+    return novaPilha;
 }
 
-void push(Pilha **pilha, int valor)
+void push(Pilha *pilha, int valor)
 {
-    Pilha *novoItem;
-    novoItem = (Pilha *)malloc(sizeof(Pilha));
+    Elemento *novoItem = malloc(sizeof(Elemento));
     if (novoItem == NULL)
     {
         printf("Erro: falha na alocação de memória\n");
@@ -28,37 +29,40 @@ void push(Pilha **pilha, int valor)
     }
 
     novoItem->valor = valor;
-    novoItem->anterior = *pilha;
-    *pilha = novoItem;
+    novoItem->anterior = pilha->topo;
+    pilha->topo = novoItem;
 }
 
-int pilhaVazia(Pilha *pilha)
-{
-    return (pilha->anterior == NULL);
-}
+int pilhaVazia(Pilha *pilha) { return (pilha->topo == NULL); }
 
-int pop(Pilha **pilha)
+int pop(Pilha *pilha)
 {
-    Pilha *antigaPilha = *pilha;
-    int valorTopo;
-    if (pilhaVazia(*pilha))
+    if (pilhaVazia(pilha))
     {
         printf("Pilha vazia\n");
         exit(1);
     }
-    antigaPilha = *pilha;
-    valorTopo = antigaPilha->valor;
-    *pilha = antigaPilha->anterior;
-    free(antigaPilha);
-    return valorTopo;
+
+    // salva antiga pilha (para nao perder referencia a ele)
+    Elemento *antigoTopo = pilha->topo;
+    int valorAntigoTopo = antigoTopo->valor;
+
+    // atualiza topo
+    pilha->topo = antigoTopo->anterior;
+
+    // libera elemento antigo
+    free(antigoTopo);
+
+    return valorAntigoTopo;
 }
 
 void pilhaLibera(Pilha *pilha)
 {
-    Pilha *libera = pilha->anterior;
+    Elemento *libera = pilha->topo;
+    Elemento *aux;
     while (libera != NULL)
     {
-        Pilha *aux = libera->anterior;
+        aux = libera->anterior;
         free(libera);
         libera = aux;
     }
@@ -67,9 +71,8 @@ void pilhaLibera(Pilha *pilha)
 
 void imprimePilha(Pilha *pilha)
 {
-    Pilha *aux = pilha->anterior;
-
-    for (aux = pilha->anterior; aux != NULL; aux = aux->anterior)
+    Elemento *aux;
+    for (aux = pilha->topo; aux != NULL; aux = aux->anterior)
     {
         printf("%d\n", aux->valor);
     }
@@ -77,14 +80,22 @@ void imprimePilha(Pilha *pilha)
 
 int main()
 {
+    printf("Inicializando pilha\n");
     Pilha *novaPilha = criaPilha();
-    push(&novaPilha, 5);
-    push(&novaPilha, 6);
-    push(&novaPilha, 1);
-    push(&novaPilha, 9);
-    push(&novaPilha, 8);
-    imprimePilha(novaPilha);
-    printf("--------------");
+    push(novaPilha, 1);
+    push(novaPilha, 2);
+    push(novaPilha, 3);
+    push(novaPilha, 4);
+    push(novaPilha, 5);
 
+    imprimePilha(novaPilha);
+    printf("--------------\n");
+    while (!pilhaVazia(novaPilha))
+    {
+        printf("popped: %d\n", pop(novaPilha));
+    }
+
+    printf("Liberando Pilha\n");
+    pilhaLibera(novaPilha);
     return 0;
 }
