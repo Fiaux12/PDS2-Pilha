@@ -71,9 +71,6 @@ Lista *lista_retira(Lista *lista, int v)
         aux = aux->prox;
     }
 
-    printf("antiga %d \n", antiga->info);
-    printf("aux %d \n", aux->info);
-
     if (aux == NULL)
     {
         return lista;
@@ -112,29 +109,32 @@ int lista_igual(Lista *lista1, Lista *lista2)
     }
 }
 
-Lista *lst_insere_ordenado(Lista *l, int v){
+Lista *lista_insere_ordenado(Lista *l, int v)
+{
 
-	Lista *novo;
-	Lista *ant = NULL;
-	Lista *p = l;
+    Lista *novo;
+    Lista *ant = NULL;
+    Lista *p = l;
 
-	while(p != NULL && p->info < v){
-		ant = p;
-		p = p->prox;
-	}
+    while (p != NULL && p->info < v)
+    {
+        ant = p;
+        p = p->prox;
+    }
 
-	novo = (Lista *) malloc(sizeof(Lista));
-	novo->info = v;
+    novo = (Lista *)malloc(sizeof(Lista));
+    novo->info = v;
 
-	if (ant == NULL)
-	{
-		novo->prox =l;
-		l = novo;
-	}
+    if (ant == NULL)
+    {
+        novo->prox = l;
+        l = novo;
+    }
 
-	else{
-		novo->prox = ant->prox;
-		ant->prox = novo;
-	}
-	return l;
+    else
+    {
+        novo->prox = ant->prox;
+        ant->prox = novo;
+    }
+    return l;
 }
