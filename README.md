@@ -1,1 +1,3 @@
-# PDS2-Pilha
+# PDS2-TAD
+
+Exercícios da disciplina Programação de Desenvolvimento de Software.
