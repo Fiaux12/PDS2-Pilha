@@ -13,7 +13,7 @@ int main()
     novaLista = lista_insere(novaLista, 4);
     novaLista = lista_insere(novaLista, 5);
     lista_imprime(novaLista);
-    printf("------------------------\n");
+    printf("\n------------------------\n");
 
     novaLista = lista_retira(novaLista, 2);
     lista_imprime(novaLista);
